@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nextsoft Store</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      background: #ffffff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header img {
+      height: 40px;
+      margin-right: 20px;
+    }
+
+    #searchBar {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    #filters {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+      flex-wrap: wrap;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .filter {
+      padding: 8px 12px;
+      background: #eee;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .filter:hover {
+      background: #ddd;
+    }
+
+    #appGrid {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .appCard {
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .appCard img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .appCard h3 {
+      margin: 5px 0;
+      font-size: 18px;
+    }
+
+    .appCard p {
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="https://raw.githubusercontent.com/nextsoftcorp-micaelcarlos/Nextsoft-store/main/Nextsoft%20store.svg" alt="Nextsoft Store Logo" />
+  <input id="searchBar" type="text" placeholder="Search apps..." />
+</header>
+
+<div id="filters">
+  <div class="filter">Productivity</div>
+  <div class="filter">Games</div>
+  <div class="filter">Utilities</div>
+  <div class="filter">Music & Video</div>
+  <div class="filter">System</div>
+  <div class="filter">Internet</div>
+  <div class="filter">Graphics & Photography</div>
+  <div class="filter">Packages and Updates</div>
+</div>
+
+<div id="appGrid">
+  <!-- Example App Card Template -->
+  <!-- Replace or duplicate dynamically using JS if needed -->
+
+  <!-- Example card -->
+  <div class="appCard">
+    <img src="https://raw.githubusercontent.com/nextsoftcorp-micaelcarlos/Nextsoft-store/main/Apps/example/icon.png" alt="App Icon" />
+    <h3>Example App</h3>
+    <p>Short description of the app from the repository.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
