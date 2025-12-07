@@ -1,0 +1,2 @@
+description: Simple and Modern Music player for computers.
+category: Music & Video
