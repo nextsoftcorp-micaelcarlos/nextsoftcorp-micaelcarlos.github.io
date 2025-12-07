@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nextsoft Store</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f5f5f5;
+  color:#222;
+}
+
+header{
+  display:flex;
+  align-items:center;
+  padding:15px;
+  background:#fff;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+header img{
+  height:40px;
+  margin-right:20px;
+}
+
+#searchBar{
+  flex:1;
+  padding:10px;
+  font-size:16px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+#filters{
+  display:flex;
+  gap:10px;
+  padding:15px;
+  flex-wrap:wrap;
+  background:#fff;
+  border-bottom:1px solid #ddd;
+}
+
+.filter{
+  padding:8px 12px;
+  background:#eee;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.filter:hover{
+  background:#ddd;
+}
+
+#appGrid{
+  padding:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:20px;
+}
+
+.appCard{
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+
+.appCard img{
+  width:80px;
+  height:80px;
+  object-fit:contain;
+  margin-bottom:10px;
+}
+
+.appCard h3{
+  margin:5px 0;
+  font-size:18px;
+}
+
+.appCard p{
+  font-size:14px;
+  color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<img src="https://raw.githubusercontent.com/nextsoftcorp-micaelcarlos/Nextsoft-store/main/Nextsoft%20store.svg">
+<input id="searchBar" type="text" placeholder="Search apps...">
+</header>
+
+<div id="filters">
+  <div class="filter">Productivity</div>
+  <div class="filter">Games</div>
+  <div class="filter">Utilities</div>
+  <div class="filter">Music & Video</div>
+  <div class="filter">System</div>
+  <div class="filter">Internet</div>
+  <div class="filter">Graphics & Photography</div>
+  <div class="filter">Packages and Updates</div>
+</div>
+
+<div id="appGrid"></div>
+
+<script>
+const repoOwner = "nextsoftcorp-micaelcarlos";
+const repoName  = "nextsoftcorp-micaelcarlos.github.io";
+const basePath  = "nextsoft-store/Apps";
+
+const grid = document.getElementById("appGrid");
+
+// ==============================
+//   LISTAR PASTAS
+// ==============================
+async function loadApps(){
+
+  try{
+
+    const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${basePath}`;
+    const resp = await fetch(url);
+    const folders = await resp.json();
+
+    for(const item of folders){
+      if(item.type === "dir"){
+        loadApp(item.name);
+      }
+    }
+
+  }catch(err){
+    grid.innerHTML = "<p style='color:red'>Erro ao carregar Apps.</p>";
+  }
+}
+
+// ==============================
+//   LER APP
+// ==============================
+async function loadApp(folder){
+
+  const baseRaw = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${basePath}/${folder}/`;
+
+  let desc = "No description available.";
+  let cat = "Uncategorized";
+
+  // --- Descrição ---
+  try{
+    const txt = await fetch(baseRaw + "description.txt").then(r=>r.text());
+
+    txt.split("\n").forEach(l=>{
+      if(l.toLowerCase().startsWith("description:"))
+        desc = l.split(":").slice(1).join(":").trim();
+
+      if(l.toLowerCase().startsWith("category:"))
+        cat = l.split(":").slice(1).join(":").trim();
+    });
+  }catch(e){}
+
+  // --- Ícone ---
+  let iconUrl = "https://raw.githubusercontent.com/nextsoftcorp-micaelcarlos/Nextsoft-store/main/NoIcon.svg";
+  try{
+    const listURL = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${basePath}/${folder}`;
+    const files = await fetch(listURL).then(r=>r.json());
+
+    const icon = files.find(f =>
+      f.name.toLowerCase().endsWith(".svg") ||
+      f.name.toLowerCase().endsWith(".png")
+    );
+
+    if(icon) iconUrl = icon.download_url;
+
+  }catch(e){}
+
+  // --- CARD ---
+  const card = document.createElement("div");
+  card.className = "appCard";
+  card.dataset.category = cat;
+
+  card.innerHTML = `
+    <img src="${iconUrl}">
+    <h3>${folder.replaceAll("-"," ").replace(/\b\w/g, c => c.toUpperCase())}</h3>
+    <p>${desc}</p>
+  `;
+
+  grid.appendChild(card);
+}
+
+// ==============================
+//   FILTRO
+// ==============================
+document.querySelectorAll(".filter").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+
+    const f = btn.textContent;
+
+    document.querySelectorAll(".appCard").forEach(card=>{
+      card.style.display =
+        card.dataset.category === f ? "flex" : "none";
+    });
+
+  });
+});
+
+// ==============================
+//   BUSCA
+// ==============================
+document.getElementById("searchBar")
+.addEventListener("input", e=>{
+
+  const q = e.target.value.toLowerCase();
+
+  document.querySelectorAll(".appCard").forEach(card=>{
+    const title = card.querySelector("h3").textContent.toLowerCase();
+    card.style.display = title.includes(q) ? "flex" : "none";
+  });
+
+});
+
+// ==============================
+//   START
+// ==============================
+loadApps();
+
+</script>
+
+</body>
+</html>
